@@ -68,7 +68,18 @@ def example_add_line_to_file():
     # Add a new line to my_file that contains the word 'lol' and print True|False if my_file was changed.
     print(my_file + 'lol')
     # Add line even if it already exists in the file.
-    my_file.add('foo', unique=False)
+    my_file.unique = False
+    my_file.add('foo')
+
+
+def example_add_list_of_lines_to_file():
+    """
+    Add a list() of strings, each on its own line.
+    Same as the previous example you can use .append() or '+'.
+    """
+    my_file = FileAsObj('/tmp/example_file.txt')
+    lines_to_add = ['simultaneous', 'money shot', 'remedy']
+    my_file.add(lines_to_add)
 
 
 def example_print_match_count():
@@ -140,3 +151,20 @@ def example_manually_update_change_log():
     """  You can inject an arbitrary message to the log sub-class by calling it. """
     my_file = FileAsObj('/tmp/example_file.txt')
     my_file.log('A manual log entry.')
+
+
+def example_sort_in_place():
+    """ To sort contents in place after the file is read. """
+    my_file = FileAsObj('/tmp/example_file.txt')
+    my_file.sort()
+
+
+def example_sort_during_read():
+    """
+    To sort contents during read().
+    The .sorted attribute is checked every time contents are modified.
+    Whenever a change occurs if sorted is True the contents are sorted with self.sort().
+    """
+    my_file = FileAsObj()
+    my_file.sorted = True
+    my_file.read('/tmp/example_file.txt')

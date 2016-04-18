@@ -1,15 +1,6 @@
 """ -*- coding: utf-8 -*-
-
-Manage a local file as an object. Store contents in a unique list and ignore commented lines.
-
-Written to handle files that contain only text data, good for when you cannot or will not use a proper SQL database.
-Not useful for config files.
-
-Written by a SysAdmin who needed to treat files like databases.
-
-John Hazelwood, 2016
 https://github.com/jhazelwo/python-fileasobj
-
+(c) John Hazelwood, 2011-2016
 """
 import os
 from platform import node
@@ -18,7 +9,7 @@ import re
 import sys
 sys.dont_write_bytecode = True
 
-__version__ = '1.1.0'
+__version__ = '2.0.0'
 
 
 class FileAsObj(object):
@@ -27,24 +18,14 @@ class FileAsObj(object):
             -For when you just can't be bothered to use a real database.
 
     Each line of a file is added to the list 'self.contents'.
-    By default lines that start with a # are ignored.
-    By default data in self.contents is unique.
-    Lines are stored in the order they appear in the file.
+    By default lines are stored in the order they appear in the file.
     """
 
-    def __init__(self, filename=None, verbose=False):
+    def __init__(self, filename=None):
         """
         You may specify the file to read() during instantiation.
-
-        verbose - BE CAREFUL! If you enable verbose all of the lines in your file will be added to self.contents.
-            This includes comments and duplicate lines. If you rely on this classes' .grep() or .egrep() methods
-            be sure you understand that comments can be returned as a valid result!
-
         """
-        self.birthday = (
-            float(time.time()),
-            str(time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime()))
-            )
+        self.birthday = str(int(time.time()))
         #
         # Used during .write(), override only if absolutely necessary.
         self.linesep = '\n'
@@ -58,7 +39,7 @@ class FileAsObj(object):
         #
         # Create a local log object to track actions.
         self.log = self.Log(tag='{0}[{1}]'.format(arg0, os.getpid()))
-        self.log('init(filename={0}, verbose={1}):'.format(filename, verbose))
+        self.log('init(filename={0}):'.format(filename))
         #
         # The list where contents of the file are stored
         self.contents = list()
@@ -67,17 +48,19 @@ class FileAsObj(object):
         self.filename = filename
         #
         # Declare current state is original data from self.filename.
+        # This is set to False during .read() and .write()/.save()
+        # Any method that alters self.contents changes this to True.
         self.changed = False
         #
         # Automatically sort file on read()
-        # Version 2x ## self.sort = False
+        self.sorted = False
         #
         # Ensure file contents are always unique.
-        # Version 2x ## self.unique = False
+        self.unique = False
         #
         # If you gave me a file to read when instantiated, then do so.
         if self.filename is not None:
-            self.read(self.filename, verbose)
+            self.read(self.filename)
 
     class Log(object):
         """
@@ -103,37 +86,26 @@ class FileAsObj(object):
             """ Return my log as multi-line string """
             return self.trace
 
-    def read(self, given_file, verbose=False):
+    def read(self, given_file):
         """
-        Read given_file to self.contents, ignoring comments and duplicate lines.
-        WILL add a line if it starts with a space or tab but has a # later in
-        the line.
+        Read given_file to self.contents
+        Will ignoring duplicate lines if self.unique is True
         """
         self.filename = str.strip(given_file)
         self.log('Read-only opening {0}'.format(self.filename))
         with open(self.filename, 'r') as handle:
             for line in handle:
                 line = line.rstrip('\r\n')
-                #
-                # blank lines that were just \n become None,
-                # so make sure this pass of line exists
-                if line:
-                    if verbose:
-                        #
-                        # Some crazy person enabled verbose, just
-                        # add whatever is in the file to
-                        # self.contents.
-                        # May whatever god you believe in
-                        #   have mercy on your code.
+                # Blank lines that were just \n become None so make sure this pass of line exists
+                if line is not None:
+                    if self.unique is not False and self.unique is not True:
+                        raise AttributeError('Attribute self.unique is not True or False')
+                    if self.unique is False:
                         self.contents.append(line)
-                    elif line[0] is not '#':
-                        # Line is not a comment
-                        #
-                        #
-                        # unique the contents of given_file when reading
-                        # Ignore lines that have fewer than 2 characters
-                        if len(line) > 1 and line not in self.contents:
-                            self.contents.append(line)
+                    elif self.unique is True and line not in self.contents:
+                        self.contents.append(line)
+        if self.sorted:
+            self.sort()
         self.log('Read {0} lines'.format(len(self.contents)))
         return True
 
@@ -149,22 +121,38 @@ class FileAsObj(object):
             return this
         return False
 
-    def add(self, line, unique=True):
+    def add(self, this):
         """
-        add 'line' to end of contents.
-        By default will not create a duplicate line.
-        If unique is False will add regardless of contents.
+        Append 'this' to contents
+            where 'this' is an entire line or a list of lines.
+
+        If self.unique is False it will add regardless of contents.
+
+        Multi-line strings are converted to a list delimited by new lines.
+
+        :param this: String or List of Strings. Arbitrary string(s) to append to file contents.
+        :return: Boolean. Whether contents were changed during this method call.
         """
-        self.log('Append "{0}" to {1}; unique={2}'.format(line, self.filename, unique))
-        if unique is False:
-            self.contents.append(line)
-            self.changed = True
-            return True
-        if line not in self.contents:
-            self.contents.append(line)
-            self.changed = True
-            return True
-        return False
+        self.log('Append "{0}" to {1}; unique={2}'.format(this, self.filename, self.unique))
+        local_changes = False
+
+        if this is False:
+            return False
+        if isinstance(this, str):
+            this = this.split('\n')
+        if not isinstance(this, list):
+            raise ValueError('Argument given to .add() not a string or list, was {0}'.format(type(this)))
+
+        for element in this:
+            if self.unique is False:
+                self.contents.append(element)
+                self.changed = local_changes = True
+            elif self.unique is True and element not in self.contents:
+                self.contents.append(element)
+                self.changed = local_changes = True
+        if self.sorted and local_changes:
+            self.sort()
+        return local_changes
 
     def rm(self, this):
         """
@@ -173,7 +161,10 @@ class FileAsObj(object):
 
         Return true if the file was changed by rm(), False otherwise.
 
+        Multi-line strings are converted to a list delimited by new lines.
+
         :param this: string, or list of strings - each string represents an entire line to be removed from file.
+        :return: Boolean, whether contents were changed.
         """
         self.log('rm({0}, "{1}"):'.format(self.filename, this))
         if this is False:
@@ -183,6 +174,7 @@ class FileAsObj(object):
         if not isinstance(this, list):
             raise ValueError('Argument given to .rm() not a string or list, was {0}'.format(type(this)))
         #
+        local_changes = False
         for element in this:
             if element in self.contents:
                 while element in self.contents:
@@ -190,10 +182,12 @@ class FileAsObj(object):
                                                                              self.contents.index(element),
                                                                              self.filename))
                     self.contents.remove(element)
-                    self.changed = True
+                    self.changed = local_changes = True
             else:
                 self.log('"{0}" not found in {1}'.format(element, self.filename))
-        return self.changed
+        if self.sorted and local_changes:
+            self.sort()
+        return local_changes
 
     def write(self):
         """
@@ -203,17 +197,12 @@ class FileAsObj(object):
         There is no self.changed check because we need to let the caller decide whether or not to write. This is
             useful if you want to force an overwrite of a file that might have been changed on disk even if
             self.contents did not change.
-
-        You can do something like:
-        if stats.changed:
-
-            # something changed, re-write the file.
-            stats.write()
         """
         self.log('Writing {0}'.format(self.filename))
         with open(self.filename, 'w') as handle:
             for this_line in self.contents:
                 handle.write(this_line+self.linesep)
+        self.changed = False
         return True
 
     def grep(self, needle):
@@ -225,15 +214,15 @@ class FileAsObj(object):
         If multiple matches return lines as list of strings.
         If no matches return False
         """
-        retval = list()
+        r = list()
         for line in self.contents:
             if needle in line:
-                retval.append(line)
-        if retval:
-            if len(retval) == 1:
-                return str(retval[0])
+                r.append(line)
+        if r:
+            if len(r) == 1:
+                return str(r[0])
             else:
-                return retval
+                return r
         # all-else
         return False
 
@@ -246,15 +235,15 @@ class FileAsObj(object):
         If no matches return False
         """
         pattern = re.compile(pattern)
-        retval = list()
+        r = list()
         for line in self.contents:
             if pattern.search(line):
-                retval.append(line)
-        if retval:
-            if len(retval) == 1:
-                return str(retval[0])
+                r.append(line)
+        if r:
+            if len(r) == 1:
+                return str(r[0])
             else:
-                return retval
+                return r
         # all-else
         return False
 
@@ -298,12 +287,21 @@ class FileAsObj(object):
         """
         return self.write()
 
-    def append(self, this, unique=True):
+    def append(self, this):
         """
         Shorcut method
         ex: myfile.append('foo')
         """
-        return self.add(this, unique)
+        return self.add(this)
+
+    def sort(self, key=None, reverse=False):
+        """
+        Sort contents using sort() method available to list()
+        :return: None (because list().sort() doesn't return anything)
+        """
+        self.contents.sort(key=key, reverse=reverse)
+        self.log('Contents sorted')
+        return None
 
     def __len__(self):
         """

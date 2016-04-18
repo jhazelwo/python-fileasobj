@@ -5,12 +5,12 @@ from distutils.core import setup
 setup(
     name='fileasobj',
     packages=['fileasobj'],
-    version='1.1.0',
+    version='2.0.0',
     description='Manage a file as a Python list.',
     author='John Hazelwood',
     author_email='jhazelwo@users.noreply.github.com',
     url='https://github.com/jhazelwo/python-fileasobj',
-    download_url='https://github.com/jhazelwo/python-fileasobj/tarball/1.1.0',
+    download_url='https://github.com/jhazelwo/python-fileasobj/tarball/2.0.0',
     keywords=['python', 'file', 'fileasobj'],
     license='MIT',
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers

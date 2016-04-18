@@ -28,27 +28,53 @@ my_file.save()
 
 ```  
 
+* Depending on your learning style reading tests/tests_fileasobj.py might also be helpful in enabling you to get the most out of this module.
 
 ### Methods:
 
-* .grep    Find first occurrence of substring in file
-* .egrep   Regex-find first occurrence of substring in file (Remember to use ' .* ', not just ' * ')
-* .add     Add given line to end of file
-* .rm      Remove a line from file, give entire matching line.
-* .check   Return line if line is in file, else return False
-* .read    Read file into self.contents as list
-* .write   Save list to file overriding file on disk
-* .replace Replace a whole line (old, new)
+* .grep('string')
+    * Find all occurrences of string in file.
+* .egrep('^a?regex.*pattern$')
+    * Regex-find all occurrences of substring in file.
+    * (Remember to use ' .* ', not just ' * ').
+* .add('entire line as string')
+    * Add given line to end of file.
+    * Also accepts a list() of lines.
+* .rm('entire line as string')
+    * Remove a line from file, give entire matching line.
+    * Also accepts a list() of lines.
+* .check('entire line as string')
+    * Return line if line is in file, else return False
+* .read('/path/to/file')
+    * Read file into self.contents as list
+* .save()
+    * Writes contents to file overriding file on disk.
+    * Alias of .write()
+* .replace('existing line to replace', 'line to use as replacement')
+    * Replace a whole line.
+    * Will accept a list of lines for first parameter.
+* .sort()
+    * Sort contents in-place using list()'s sort() method.
 
 Shortcut methods also exist, check examples.py for usage.
 
 ### Attributes:
 
-* log - A string log of all methods run on object including any non-fatal errors
-* verbose - BOOLEAN, if true file is .read() verbatim, comments and short lines are NOT ignored and duplicate lines are 
-preserved. Please remember that .rm() and .replace() will work on duplicate lines.
-* changed - BOOLEAN, whether the current state if different from what was .read() from disk.
-* linesep - STRING, override the default line separator during .write().
+* `filename`
+    * STRING, path to file.
+* `contents`
+    * LIST, contents of file.
+* `sorted`
+    * BOOLEAN, whether to naturally sort contents during update methods. Uses list()'s built-in sort() method. 
+* `unique`
+    * BOOLEAN, whether to permit duplicate lines during .read() and update methods. 
+* `changed`
+    * BOOLEAN, whether the current state if different from what was .read() from disk.
+    * This is automatically updated during .read() and .write()/.save().
+* `log`
+    * A string log of all methods run on object including any non-fatal errors
+* `linesep`
+    * STRING, override the default line separator during .write().
 
 ### An ever-so-slightly-non-apocryphal non-minor version history:
  
@@ -72,10 +98,13 @@ I write in Python 3.4x and occasionally do testing in 2.6 and 2.7. This module /
 `./tests/test_fileasobj.py` is a standard unit test.
 
 
-### Devel / TODO:
+### Troubleshooting:
 
-* Deploy 1.1.0 to pypi
-* In an up-coming release (Version 2.x) the `verbose` parameter will be replaced by a `unique` attribute.
-* Will add a `sorted` attribute keep file sort-ed.
-* A .sort() shortcut method will be added to sort self.contents in place.
-* self.birthday will be changed from a tuple to string containing epoch time in gmt.
+If FileAsObj did something you didn't expect then add a `print(my_file.log)` to your code, that will show all of the steps FileAsObj did during its life. 
+
+File an [issue](https://github.com/jhazelwo/python-fileasobj/issues) on this repo if you need help.
+
+
+### Development & TODO:
+
+* None
