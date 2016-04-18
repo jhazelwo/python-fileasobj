@@ -4,7 +4,7 @@ Feel free to change TestFile path or name as needed but leave TestContains as it
 Be sure fileasobj is in your Python path.
 
 Hint:
-  # PYTHONPATH=`pwd` python3 tests/tests_fileasobj.py
+# PYTHONPATH=`pwd` python3 tests/tests_fileasobj.py
 
 """
 import unittest
