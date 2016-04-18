@@ -18,8 +18,10 @@ import re
 import sys
 sys.dont_write_bytecode = True
 
+__version__ = '1.1.0'
 
-class FileAsObj(list):
+
+class FileAsObj(object):
     """
     Manage a file as an object-
             -For when you just can't be bothered to use a real database.
@@ -44,6 +46,9 @@ class FileAsObj(list):
             str(time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime()))
             )
         #
+        # Used during .write(), override only if absolutely necessary.
+        self.linesep = '\n'
+        #
         # Name of file this is running as
         arg0 = str(os.path.basename(sys.argv[0])).replace('.py', '')
         if len(arg0) < 3 or len(arg0) > 255:
@@ -62,7 +67,13 @@ class FileAsObj(list):
         self.filename = filename
         #
         # Declare current state is original data from self.filename.
-        self.virgin = True
+        self.changed = False
+        #
+        # Automatically sort file on read()
+        # Version 2x ## self.sort = False
+        #
+        # Ensure file contents are always unique.
+        # Version 2x ## self.unique = False
         #
         # If you gave me a file to read when instantiated, then do so.
         if self.filename is not None:
@@ -147,11 +158,11 @@ class FileAsObj(list):
         self.log('Append "{0}" to {1}; unique={2}'.format(line, self.filename, unique))
         if unique is False:
             self.contents.append(line)
-            self.virgin = False
+            self.changed = True
             return True
         if line not in self.contents:
             self.contents.append(line)
-            self.virgin = False
+            self.changed = True
             return True
         return False
 
@@ -179,33 +190,30 @@ class FileAsObj(list):
                                                                              self.contents.index(element),
                                                                              self.filename))
                     self.contents.remove(element)
-                    self.virgin = False
+                    self.changed = True
             else:
                 self.log('"{0}" not found in {1}'.format(element, self.filename))
-        #
-        if self.virgin is True:
-            return False
-        return True
+        return self.changed
 
     def write(self):
         """
         write self.contents to self.filename
         self.filename was defined during .read()
 
-        There is no self.virgin check because we need to let the caller decide whether or not to write. This is
+        There is no self.changed check because we need to let the caller decide whether or not to write. This is
             useful if you want to force an overwrite of a file that might have been changed on disk even if
             self.contents did not change.
 
         You can do something like:
-        if not stats.virgin:
-            #
-            #something changed, re-write the file.
+        if stats.changed:
+
+            # something changed, re-write the file.
             stats.write()
         """
         self.log('Writing {0}'.format(self.filename))
         with open(self.filename, 'w') as handle:
             for this_line in self.contents:
-                handle.write(this_line+'\n')
+                handle.write(this_line+self.linesep)
         return True
 
     def grep(self, needle):
@@ -272,7 +280,7 @@ class FileAsObj(list):
             if this in self.contents:
                 while this in self.contents:
                     index = self.contents.index(this)
-                    self.virgin = False
+                    self.changed = True
                     self.contents.remove(this)
                     self.contents.insert(index, new)
                     self.log('Replaced "{0}" with "{1}" at line {2} of {3}'.format(this,
@@ -281,9 +289,7 @@ class FileAsObj(list):
                                                                                    self.filename))
             else:
                 self.log('"{0}" not in {1}'.format(this, self.filename))
-        if self.virgin is True:
-            return False
-        return True
+        return self.changed
 
     def save(self):
         """
