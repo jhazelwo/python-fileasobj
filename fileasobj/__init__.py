@@ -21,7 +21,7 @@ class FileAsObj(object):
     By default lines are stored in the order they appear in the file.
     """
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, logging=True):
         """
         You may specify the file to read() during instantiation.
         """
@@ -36,7 +36,7 @@ class FileAsObj(object):
             arg0 = 'Python'  # If arg zero is invalid, name me Python
         #
         # Create a local log object to track actions.
-        self.log = self.Log(tag='{0}[{1}]'.format(arg0, os.getpid()))
+        self.log = self.Log(tag='{0}[{1}]'.format(arg0, os.getpid()), logging=logging)
         self.log('init(filename={0}):'.format(filename))
         #
         # The list where contents of the file are stored
@@ -65,20 +65,22 @@ class FileAsObj(object):
         Track and report steps taken in this app.
         'tag' is "name[pid]", similar to the -t argument used in `/bin/logger`
         """
-        def __init__(self, tag):
+        def __init__(self, tag, logging=True):
             """ Create new log """
             self.trace = ''
             self.tag = tag
+            self.logging = logging
 
         def __call__(self, this):
             """ Add 'this' to my log """
-            self.trace = '{OG}{Now} {Host} {Proc} {Event}\n'.format(
-                OG=self.trace,
-                Now=time.strftime('%c', time.localtime()),
-                Host=node(),
-                Proc=self.tag,
-                Event=this,
-            )
+            if self.logging is True:
+                self.trace = '{OG}{Now} {Host} {Proc} {Event}\n'.format(
+                    OG=self.trace,
+                    Now=time.strftime('%c', time.localtime()),
+                    Host=node(),
+                    Proc=self.tag,
+                    Event=this,
+                )
 
         def __str__(self):
             """ Return my log as multi-line string """

@@ -364,6 +364,20 @@ class TestAll(unittest.TestCase):
         with self.assertRaises(AttributeError):
             test_file.read(TESTFILE)
 
+    def test_logging_disable(self):
+        """ Test disabled local log. """
+        test_file = FileAsObj(logging=False)
+        test_file.log('logging disabled this will not be saved')
+        self.assertTrue(str(test_file.log) == '')
+        self.assertTrue(test_file.log.trace == '')
+
+    def test_logging_enabled(self):
+        """ Test local log enabled by default. """
+        test_file = FileAsObj()
+        self.assertIsNotNone(str(test_file.log))
+        test_file.log('FINDME')
+        self.assertTrue('FINDME' in str(test_file.log))
+        self.assertTrue('FINDME' in test_file.log.trace)
 
 if __name__ == '__main__':
     unittest.main()
