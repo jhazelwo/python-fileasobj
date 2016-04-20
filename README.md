@@ -34,9 +34,10 @@ my_file.save()
 
 * .grep('string')
     * Find all occurrences of string in file.
-    * 1 match is returned as a string, multiple matches returned as a list of strings. Returns False if no matches.
+    * Returns list of matching lines, or returns False if no matches.
 * .egrep('^a?regex.*pattern$')
     * Regex-find all occurrences of substring in file.
+    * Returns list of matching lines, or returns False if no matches.
     * Uses Python3 standard regex engine https://docs.python.org/3/library/re.html
     * _Remember to use ' .* ', not just ' * '_.
 * .add('entire line as string')

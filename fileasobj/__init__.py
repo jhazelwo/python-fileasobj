@@ -129,24 +129,21 @@ class FileAsObj(object):
 
         Multi-line strings are converted to a list delimited by new lines.
 
-        :param this: String or List of Strings. Arbitrary string(s) to append to file contents.
-        :return: Boolean. Whether contents were changed during this method call.
+        :param this: String or List of Strings; arbitrary string(s) to append to file contents.
+        :return: Boolean; whether contents were changed during this method call.
         """
-        self.log('Append "{0}" to {1}; unique={2}'.format(this, self.filename, self.unique))
-        local_changes = False
-
+        if self.unique is not False and self.unique is not True:
+            raise AttributeError('Attribute self.unique is not True or False.')
+        self.log('add("{0}"); unique={1}'.format(this, self.unique))
         if this is False:
             return False
         if isinstance(this, str):
             this = this.split('\n')
         if not isinstance(this, list):
             raise ValueError('Argument given to .add() not a string or list, was {0}'.format(type(this)))
-
+        local_changes = False
         for element in this:
-            if self.unique is False:
-                self.contents.append(element)
-                self.changed = local_changes = True
-            elif self.unique is True and element not in self.contents:
+            if self.unique is False or element not in self.contents:
                 self.contents.append(element)
                 self.changed = local_changes = True
         if self.sorted and local_changes:
@@ -165,7 +162,7 @@ class FileAsObj(object):
         :param this: String, or List of Strings; each string represents an entire line to be removed from file.
         :return: Boolean, whether contents were changed.
         """
-        self.log('rm({0}, "{1}"):'.format(self.filename, this))
+        self.log('rm({0})'.format(this))
         if this is False:
             return False
         if isinstance(this, str):
@@ -175,13 +172,10 @@ class FileAsObj(object):
         #
         local_changes = False
         for element in this:
-            if element in self.contents:
-                while element in self.contents:
-                    self.log('Removed "{0}" from position {1} of {2}'.format(element,
-                                                                             self.contents.index(element),
-                                                                             self.filename))
-                    self.contents.remove(element)
-                    self.changed = local_changes = True
+            while element in self.contents:
+                self.log('Removed "{0}" from position {1}'.format(element, self.contents.index(element)))
+                self.contents.remove(element)
+                self.changed = local_changes = True
             else:
                 self.log('"{0}" not found in {1}'.format(element, self.filename))
         if self.sorted and local_changes:
@@ -209,49 +203,39 @@ class FileAsObj(object):
         Search all lines in file for substring 'needle'.
             equiv to: `grep "needle" ./file`
 
-        If 1 match, return line as string.
-        If multiple matches return lines as list of strings.
-        If no matches return False
+        Return matching lines as a List of Strings.
+        If no matches returns False
 
-        :param needle: String; word to search for.
-        :return: String, List of Strings, or Boolean.
+        :param needle: String; word or phrase to search for.
+        :return: List of Strings, or False.
         """
-        r = list()
+        result = list()
         for line in self.contents:
             if needle in line:
-                r.append(line)
-        if r:
-            if len(r) == 1:
-                return str(r[0])
-            else:
-                return r
-        # all-else
-        return False
+                result.append(line)
+        if len(result) == 0:
+            return False
+        return result
 
     def egrep(self, pattern):
         """
         REGEX search for pattern in file
             equiv to: `egrep "^asdf.*[0-9]+$" ./file`
 
-        If 1 match, return line as string.
-        If multiple matches return lines as list of strings.
-        If no matches return False
+        Return matching lines as a List of Strings.
+        If no matches returns False
 
         :param pattern: String; regex pattern to search for.
-        :return: String, List of Strings, or Boolean.
+        :return: List of Strings, or Boolean.
         """
         pattern = re.compile(pattern)
-        r = list()
+        result = list()
         for line in self.contents:
             if pattern.search(line):
-                r.append(line)
-        if r:
-            if len(r) == 1:
-                return str(r[0])
-            else:
-                return r
-        # all-else
-        return False
+                result.append(line)
+        if len(result) == 0:
+            return False
+        return result
 
     def replace(self, old, new):
         """
@@ -264,7 +248,7 @@ class FileAsObj(object):
 
         :return: Boolean; whether contents changed during method call.
         """
-        self.log('Replace "{0}" with "{1}" in {2}'.format(old, new, self.filename))
+        self.log('replace("{0}", "{1}")'.format(old, new))
         if old is False:
             return False
         if isinstance(old, str):
@@ -273,18 +257,12 @@ class FileAsObj(object):
             raise ValueError('Argument "old" not a string, list or False, was {0}'.format(type(old)))
         local_changes = False
         for this in old:
-            if not isinstance(this, str):
-                raise ValueError('{0} is not a string'.format(this))
-            if this in self.contents:
-                while this in self.contents:
-                    index = self.contents.index(this)
-                    self.changed = local_changes = True
-                    self.contents.remove(this)
-                    self.contents.insert(index, new)
-                    self.log('Replaced "{0}" with "{1}" at line {2} of {3}'.format(this,
-                                                                                   new,
-                                                                                   index,
-                                                                                   self.filename))
+            while this in self.contents:
+                index = self.contents.index(this)
+                self.changed = local_changes = True
+                self.contents.remove(this)
+                self.contents.insert(index, new)
+                self.log('Replaced "{0}" with "{1}" at line {2}'.format(this, new, index))
             else:
                 self.log('"{0}" not in {1}'.format(this, self.filename))
         return local_changes

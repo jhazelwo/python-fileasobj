@@ -168,3 +168,31 @@ def example_sort_during_read():
     my_file = FileAsObj()
     my_file.sorted = True
     my_file.read('/tmp/example_file.txt')
+
+
+def example_all():
+    """
+    Use a bunch of methods on a file.
+    """
+    my_file = FileAsObj()
+    my_file.filename = '/tmp/example_file.txt'
+    my_file.add('# First change!')
+    my_file.save()
+    my_file = FileAsObj('/tmp/example_file.txt')
+    my_file.unique = True
+    my_file.sorted = True
+    my_file.add('1')
+    my_file.add('1')
+    my_file.add('2')
+    my_file.add('20 foo')
+    my_file.add('200 bar')
+    my_file.add('# Comment')
+    my_file.unique = False
+    my_file.add('# Comment')
+    my_file.add('# Comment')
+    my_file.unique = True
+    my_file.rm(my_file.egrep('^#.*'))
+    my_file.rm(my_file.grep('foo'))
+    my_file.replace(my_file.egrep('^2'), 'This line was replaced.')
+    print(my_file)
+    print(my_file.log)

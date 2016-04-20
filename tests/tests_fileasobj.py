@@ -94,12 +94,14 @@ class TestAll(unittest.TestCase):
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         for this in test_file:
-            self.assertIsNotNone(this)
+            self.assertIsNotNone(this)  # Can be True or False, but not None; empty str is False.
+            self.assertIsInstance(this, str)
 
     def test_birthday(self):
         """ Ensure object has non-empty attribute `birthday` """
         test_file = FileAsObj()
-        self.assertIsNotNone(test_file.birthday)
+        self.assertTrue(test_file.birthday)
+        self.assertIsInstance(test_file.birthday, str)
 
     def test_contains(self):
         """ Test __contains__ method. """
@@ -114,16 +116,20 @@ class TestAll(unittest.TestCase):
         self.assertTrue('95bf5dd7096c3552063e4187b4194b1f' not in test_file)
 
     def test_egrep_char_list(self):
-        """ Test egrep with valid selector regex """
+        """ Test egrep with valid character selector regex """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.egrep('h[o0]stname'))
+        result = test_file.egrep('h[o0]stname')
+        self.assertTrue(result)
+        self.assertIsInstance(result, list)
 
     def test_egrep_word(self):
         """ Test egrep with a word """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.egrep('bird'))
+        result = test_file.egrep('bird')
+        self.assertTrue(result)
+        self.assertIsInstance(result, list)
 
     def test_bad_regex(self):
         """ Test egrep with invalid regex """
@@ -138,7 +144,9 @@ class TestAll(unittest.TestCase):
         """ Test egrep with valid wildcard regex """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.egrep('.*rd'))
+        result = test_file.egrep('.*rd')
+        self.assertTrue(result)
+        self.assertIsInstance(result, list)
 
     def test_egrep_char_range(self):
         """ Test egrep with valid range regex """
@@ -150,19 +158,40 @@ class TestAll(unittest.TestCase):
         """ Test egrep with valid choice regex """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.egrep('(host|bird)'))
+        result = test_file.egrep('(host|bird)')
+        self.assertTrue(result)
+        self.assertIsInstance(result, list)
 
     def test_egrep_string_end(self):
         """ Test egrep with valid regex """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.egrep('tld$'))
+        result = test_file.egrep('tld$')
+        self.assertTrue(len(result) == 4)
+        self.assertIsInstance(result, list)
 
     def test_egrep_string_start(self):
         """ Test egrep with valid regex """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.egrep('^10.*'))
+        result = test_file.egrep('^10.*')
+        self.assertTrue(len(result) == 5)
+        self.assertIsInstance(result, list)
+
+    def test_egrep_no_matches(self):
+        """ Test egrep with valid regex """
+        test_file = FileAsObj()
+        test_file.contents = TESTCONTENTS.split('\n')
+        result = test_file.egrep('^this is not present in file.*')
+        self.assertTrue(result is False)
+        self.assertIsInstance(result, bool)
+
+    def test_unique_failure(self):
+        """ Test wrong attribute type of self.unique during add() """
+        test_file = FileAsObj()
+        test_file.unique = 'this is invalid attr type'
+        with self.assertRaises(AttributeError):
+            test_file.add('.')
 
     def test_add_with_unique(self):
         """ Test content integrity using `unique` """
@@ -191,6 +220,13 @@ class TestAll(unittest.TestCase):
         self.assertTrue(test_file.add('no uniq'))
         self.assertTrue(test_file.contents == ['no uniq', 'no uniq', 'no uniq'])
 
+    def test_add_failure(self):
+        """ Test wrong param type in add() """
+        test_file = FileAsObj()
+        with self.assertRaises(ValueError):
+            test_file.add(1)
+            test_file.add(True)
+
     def test_subtract(self):
         """ Test __sub__ method """
         test_file = FileAsObj()
@@ -208,6 +244,13 @@ class TestAll(unittest.TestCase):
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertTrue(test_file.rm(test_file.grep('#')))
+
+    def test_rm_failure(self):
+        """ Test wrong param type in rm() """
+        test_file = FileAsObj()
+        with self.assertRaises(ValueError):
+            test_file.rm(1)
+            test_file.rm(True)
 
     def test_replace_whole_line(self):
         """ Test substitute a line """
@@ -235,6 +278,13 @@ class TestAll(unittest.TestCase):
         self.assertTrue(test_file.replace(old, new))
         for this in old:
             self.assertFalse(test_file.check(this))
+
+    def test_replace_failure(self):
+        """ Test wrong param type in replace() """
+        test_file = FileAsObj()
+        with self.assertRaises(ValueError):
+            test_file.replace(1, '')
+            test_file.replace(True, '')
 
     def test_count_comment_empty(self):
         """ Test __len__ method """
@@ -302,6 +352,17 @@ class TestAll(unittest.TestCase):
         test_file.unique = False
         test_file.read(TESTFILE)
         self.assertTrue(test_file.contents == ['', '', '', ''])
+
+    def test_unique_failure_during_read(self):
+        """ Test wrong attribute type of self.unique during read() """
+        test_file = FileAsObj()
+        test_file.filename = TESTFILE
+        test_file.contents = BLANKFILE.split('\n')
+        self.assertTrue(test_file.save())
+        test_file = FileAsObj()
+        test_file.unique = 'this is invalid attr type'
+        with self.assertRaises(AttributeError):
+            test_file.read(TESTFILE)
 
 
 if __name__ == '__main__':
