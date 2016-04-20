@@ -97,8 +97,8 @@ Shortcut methods also exist, check examples.py for usage.
 
 ### Testing:
 
-I write in Python 3.4x and occasionally do testing in 2.6 and 2.7. This module /should/ work with anything between 2.6
- and 3.4+ but no promises.
+I write in Python 3.4 and occasionally do testing and 2.7. This module _should_ work with anything between 2.7
+ and 3.4, please let me know if you find a bug.
 
 `./tests/test_fileasobj.py` is a standard unit test.
 
