@@ -104,7 +104,7 @@ class FileAsObj(object):
                     self.contents.append(line)
         if self.sorted:
             self.sort()
-        self.log('Read {0} lines'.format(len(self.contents)))
+        self.log('Read {0} lines.'.format(len(self.contents)))
         return True
 
     def check(self, line):
@@ -289,7 +289,7 @@ class FileAsObj(object):
         :return: None (because list().sort() doesn't return anything)
         """
         self.contents.sort(key=key, reverse=reverse)
-        self.log('Contents sorted')
+        self.log('Contents sorted.')
         return None
 
     def __len__(self):
