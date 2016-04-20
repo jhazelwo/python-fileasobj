@@ -1,7 +1,7 @@
 File as (Python) Object
 ===============
 
-Manage a local file as an object. Store contents in a unique list and optionally ignore commented lines.
+Manage a local file as an object. Contents stored in a list.
 
 Written to handle files that contain only text data, good for when you cannot (or will not) use a database.
 
@@ -107,4 +107,4 @@ File an [issue](https://github.com/jhazelwo/python-fileasobj/issues) on this rep
 
 ### Development & TODO:
 
-* None
+* Add as_dict() method: return self.contents as a dictionary, where key is line number and value is line content. Note, there is no use-case for this currently.
