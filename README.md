@@ -26,7 +26,7 @@ my_file = FileAsObj('/etc/hosts')
 my_file.add('192.168.0.1  example.org')
 my_file.save()
 
-```  
+```
 
 * Depending on your learning style reading tests/tests_fileasobj.py might also be helpful in enabling you to get the most out of this module.
 
@@ -83,7 +83,7 @@ Shortcut methods also exist, check examples.py for usage.
     * String; override the default line separator during .write().
 
 ### An ever-so-slightly-non-apocryphal non-minor version history:
- 
+
 * 2016.04.17 - Conversion and deploy to pypi. FileAsList removed.
 * 2015.01.28 - Added shortcut methods, removed exception catching. Added local Log() class.
 * 2015.01.27 - .replace() now accepts list for param 'old'.
@@ -106,7 +106,7 @@ I write in Python 3.4 and occasionally do testing and 2.7. This module _should_ 
 
 ### Troubleshooting:
 
-If FileAsObj did something you didn't expect then add a `print(my_file.log)` to your code, that will show all of the steps FileAsObj did during its life. 
+If FileAsObj did something you didn't expect then add a `print(my_file.log)` to your code, that will show all of the actions FileAsObj took during the object's life.
 
 File an [issue](https://github.com/jhazelwo/python-fileasobj/issues) on this repo if you need help.
 
