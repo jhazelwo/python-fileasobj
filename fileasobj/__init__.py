@@ -33,9 +33,7 @@ class FileAsObj(object):
         # Name of file this is running as
         arg0 = str(os.path.basename(sys.argv[0])).replace('.py', '')
         if len(arg0) < 3 or len(arg0) > 255:
-            #
-            # If arg zero is invalid, name me Python
-            arg0 = 'Python'
+            arg0 = 'Python'  # If arg zero is invalid, name me Python
         #
         # Create a local log object to track actions.
         self.log = self.Log(tag='{0}[{1}]'.format(arg0, os.getpid()))
@@ -91,19 +89,17 @@ class FileAsObj(object):
         Read given_file to self.contents
         Will ignoring duplicate lines if self.unique is True
         """
+        if self.unique is not False and self.unique is not True:
+            raise AttributeError('Attribute self.unique is not True or False.')
         self.filename = str.strip(given_file)
         self.log('Read-only opening {0}'.format(self.filename))
         with open(self.filename, 'r') as handle:
             for line in handle:
                 line = line.rstrip('\r\n')
-                # Blank lines that were just \n become None so make sure this pass of line exists
-                if line is not None:
-                    if self.unique is not False and self.unique is not True:
-                        raise AttributeError('Attribute self.unique is not True or False')
-                    if self.unique is False:
-                        self.contents.append(line)
-                    elif self.unique is True and line not in self.contents:
-                        self.contents.append(line)
+                if line is None:
+                    line = ''  # Blank lines that were just \n become None so convert them to empty string.
+                if self.unique is False or line not in self.contents:
+                    self.contents.append(line)
         if self.sorted:
             self.sort()
         self.log('Read {0} lines'.format(len(self.contents)))

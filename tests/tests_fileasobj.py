@@ -13,7 +13,7 @@ Hint:
 import unittest
 from fileasobj import FileAsObj
 
-TESTFILE = '/tmp/test_fileasobj.txt'
+TESTFILE = '/tmp/test_fileasobj.txt'  # Change me on Windows
 
 TESTCONTENTS = """#/etc/hosts
 # This is a test hosts file
@@ -50,6 +50,12 @@ Checking for __contains__ functionality.
 #
 #
 #
+"""
+
+# Four empty lines
+BLANKFILE = """
+
+
 """
 
 
@@ -274,6 +280,28 @@ class TestAll(unittest.TestCase):
         test_file.add('2')
         test_file.add('1')
         self.assertTrue(test_file.contents == ['1', '2', '3'])
+
+    def test_blank_file_with_unique(self):
+        """ Testing unique on empty lines during .read() """
+        test_file = FileAsObj()
+        test_file.filename = TESTFILE
+        test_file.contents = BLANKFILE.split('\n')
+        self.assertTrue(test_file.save())
+        test_file = FileAsObj()
+        test_file.unique = True
+        test_file.read(TESTFILE)
+        self.assertTrue(test_file.contents == [''])
+
+    def test_blank_file_without_unique(self):
+        """ Testing not-unique on empty lines during .read() """
+        test_file = FileAsObj()
+        test_file.filename = TESTFILE
+        test_file.contents = BLANKFILE.split('\n')
+        self.assertTrue(test_file.save())
+        test_file = FileAsObj()
+        test_file.unique = False
+        test_file.read(TESTFILE)
+        self.assertTrue(test_file.contents == ['', '', '', ''])
 
 
 if __name__ == '__main__':

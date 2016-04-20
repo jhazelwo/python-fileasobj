@@ -1,7 +1,7 @@
 File as (Python) Object
 ===============
 
-Manage a local file as an object. Contents stored in a list.
+Manage a local file as an object. Contents stored in a [list](https://docs.python.org/3/library/stdtypes.html#list).
 
 Written to handle files that contain only text data, good for when you cannot (or will not) use a database.
 
@@ -34,15 +34,17 @@ my_file.save()
 
 * .grep('string')
     * Find all occurrences of string in file.
+    * 1 match is returned as a string, multiple matches returned as a list of strings. Returns False if no matches.
 * .egrep('^a?regex.*pattern$')
     * Regex-find all occurrences of substring in file.
-    * (Remember to use ' .* ', not just ' * ').
+    * Uses Python3 standard regex engine https://docs.python.org/3/library/re.html
+    * _Remember to use ' .* ', not just ' * '_.
 * .add('entire line as string')
     * Add given line to end of file.
-    * Also accepts a list() of lines.
+    * Also accepts a list of lines.
 * .rm('entire line as string')
     * Remove a line from file, give entire matching line.
-    * Also accepts a list() of lines.
+    * Also accepts a list of lines.
 * .check('entire line as string')
     * Return line if line is in file, else return False
 * .read('/path/to/file')
@@ -55,26 +57,29 @@ my_file.save()
     * Will accept a list of lines for first parameter.
 * .sort()
     * Sort contents in-place using list()'s sort() method.
+* .\_\_str\_\_()
+    * If you use a string method on your object (_like str() or print()_) the contents will be returned as a multi-line string.
+    * ex: `print(my_file)`
 
 Shortcut methods also exist, check examples.py for usage.
 
 ### Attributes:
 
 * `filename`
-    * STRING, path to file.
-* `contents`
-    * LIST, contents of file.
+    * String; path to file.
 * `sorted`
-    * BOOLEAN, whether to naturally sort contents during update methods. Uses list()'s built-in sort() method. 
+    * Boolean; whether to naturally sort contents during update methods. Uses list()'s built-in sort() method.
 * `unique`
-    * BOOLEAN, whether to permit duplicate lines during .read() and update methods. 
+    * Boolean; whether to permit duplicate lines during .read() and update methods.
 * `changed`
-    * BOOLEAN, whether the current state if different from what was .read() from disk.
+    * Boolean; whether the current state if different from what was .read() from disk.
     * This is automatically updated during .read() and .write()/.save().
+* `contents`
+    * List; contents of file.
 * `log`
     * A string log of all methods run on object including any non-fatal errors
 * `linesep`
-    * STRING, override the default line separator during .write().
+    * String; override the default line separator during .write().
 
 ### An ever-so-slightly-non-apocryphal non-minor version history:
  
@@ -83,7 +88,7 @@ Shortcut methods also exist, check examples.py for usage.
  * 2015.01.27 - .replace() now accepts list for param 'old'.
  * 2014.12.02 - Search methods can now return lists and .rm works on lists
  * 2014.09.09 - Added .replace(), removed .dump() and .inventory()
- * 2014.08.14 - Finally added __ str__
+ * 2014.08.14 - Finally added \_\_str\_\_
  * 2014.08.11 - Tab fixes and print changes to comply with py3.
  * 2014.06.20 - Added [e]grep, dump and verbose; some code correction
  * 2012.08.15 - Full conversion to portability, added .read()
