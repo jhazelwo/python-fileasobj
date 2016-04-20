@@ -83,16 +83,16 @@ Shortcut methods also exist, check examples.py for usage.
 
 ### An ever-so-slightly-non-apocryphal non-minor version history:
  
- * 2016.04.17 - Conversion and deploy to pypi. FileAsList removed.
- * 2015.01.28 - Added shortcut methods, removed exception catching. Added local Log() class.
- * 2015.01.27 - .replace() now accepts list for param 'old'.
- * 2014.12.02 - Search methods can now return lists and .rm works on lists
- * 2014.09.09 - Added .replace(), removed .dump() and .inventory()
- * 2014.08.14 - Finally added \_\_str\_\_
- * 2014.08.11 - Tab fixes and print changes to comply with py3.
- * 2014.06.20 - Added [e]grep, dump and verbose; some code correction
- * 2012.08.15 - Full conversion to portability, added .read()
- * 2012.07.20 - Initial public release.
+* 2016.04.17 - Conversion and deploy to pypi. FileAsList removed.
+* 2015.01.28 - Added shortcut methods, removed exception catching. Added local Log() class.
+* 2015.01.27 - .replace() now accepts list for param 'old'.
+* 2014.12.02 - Search methods can now return lists and .rm works on lists
+* 2014.09.09 - Added .replace(), removed .dump() and .inventory()
+* 2014.08.14 - Finally added \_\_str\_\_
+* 2014.08.11 - Tab fixes and print changes to comply with py3.
+* 2014.06.20 - Added [e]grep, dump and verbose; some code correction
+* 2012.08.15 - Full conversion to portability, added .read()
+* 2012.07.20 - Initial public release.
 
 
 ### Testing:

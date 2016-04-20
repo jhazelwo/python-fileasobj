@@ -105,16 +105,19 @@ class FileAsObj(object):
         self.log('Read {0} lines'.format(len(self.contents)))
         return True
 
-    def check(self, this):
+    def check(self, line):
         """
-        check existing contents of file for a string
+        Check existing contents of file for line.
 
         This searches each line as a whole, if you want to see if a substring is in a line, use .grep() or .egrep()
 
-        If found, return the needle; makes it easier for some code to delete more efficiently.
+        If found, return the line; makes it easier for some code to work more efficiently.
+
+        :param line: String; whole line to find.
+        :return: String or False.
         """
-        if this in self.contents:
-            return this
+        if line in self.contents:
+            return line
         return False
 
     def add(self, this):
@@ -159,7 +162,7 @@ class FileAsObj(object):
 
         Multi-line strings are converted to a list delimited by new lines.
 
-        :param this: string, or list of strings - each string represents an entire line to be removed from file.
+        :param this: String, or List of Strings; each string represents an entire line to be removed from file.
         :return: Boolean, whether contents were changed.
         """
         self.log('rm({0}, "{1}"):'.format(self.filename, this))
@@ -204,11 +207,14 @@ class FileAsObj(object):
     def grep(self, needle):
         """
         Search all lines in file for substring 'needle'.
-        No regex support here.
-        eq: `grep "needle" ./file`
+            equiv to: `grep "needle" ./file`
+
         If 1 match, return line as string.
         If multiple matches return lines as list of strings.
         If no matches return False
+
+        :param needle: String; word to search for.
+        :return: String, List of Strings, or Boolean.
         """
         r = list()
         for line in self.contents:
@@ -225,10 +231,14 @@ class FileAsObj(object):
     def egrep(self, pattern):
         """
         REGEX search for pattern in file
-        eq: `egrep "^asdf.*[0-9]+$" ./file`
+            equiv to: `egrep "^asdf.*[0-9]+$" ./file`
+
         If 1 match, return line as string.
         If multiple matches return lines as list of strings.
         If no matches return False
+
+        :param pattern: String; regex pattern to search for.
+        :return: String, List of Strings, or Boolean.
         """
         pattern = re.compile(pattern)
         r = list()
@@ -249,8 +259,10 @@ class FileAsObj(object):
 
         Will replace duplicates if found.
 
-        :param old: False, list of strings, or string.
-        :param new: string
+        :param old: String, List of Strings, a multi-line String, or False; what to replace.
+        :param new: String; what to use as replacement.
+
+        :return: Boolean; whether contents changed during method call.
         """
         self.log('Replace "{0}" with "{1}" in {2}'.format(old, new, self.filename))
         if old is False:
@@ -259,13 +271,14 @@ class FileAsObj(object):
             old = old.split('\n')
         if not isinstance(old, list):
             raise ValueError('Argument "old" not a string, list or False, was {0}'.format(type(old)))
+        local_changes = False
         for this in old:
             if not isinstance(this, str):
                 raise ValueError('{0} is not a string'.format(this))
             if this in self.contents:
                 while this in self.contents:
                     index = self.contents.index(this)
-                    self.changed = True
+                    self.changed = local_changes = True
                     self.contents.remove(this)
                     self.contents.insert(index, new)
                     self.log('Replaced "{0}" with "{1}" at line {2} of {3}'.format(this,
@@ -274,7 +287,7 @@ class FileAsObj(object):
                                                                                    self.filename))
             else:
                 self.log('"{0}" not in {1}'.format(this, self.filename))
-        return self.changed
+        return local_changes
 
     def save(self):
         """
@@ -329,10 +342,14 @@ class FileAsObj(object):
 
     def __contains__(self, this):
         """
-        Shortcut method
+        Shortcut method to check for a line in the file.
         ex: if 'this' in myfile: do(stuff)
         """
         return self.check(this)
 
     def __iter__(self):
+        """
+        Shortcut method to iterate over contents.
+        ex: for line in myfile: foo(line)
+        """
         return self.contents.__iter__()
