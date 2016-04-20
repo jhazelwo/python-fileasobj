@@ -22,7 +22,7 @@ Typically this module is not appropriate for config files. (Your mileage may var
 
 from fileasobj import FileAsObj
 
-my_file = FileAsObj('/etc/hosts', verbose=True)
+my_file = FileAsObj('/etc/hosts')
 my_file.add('192.168.0.1  example.org')
 my_file.save()
 
