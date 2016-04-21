@@ -90,6 +90,7 @@ class FileAsObj(object):
         """
         Read given_file to self.contents
         Will ignoring duplicate lines if self.unique is True
+        Will sort self.contents after reading file if self.sorted is True
         """
         if self.unique is not False and self.unique is not True:
             raise AttributeError('Attribute self.unique is not True or False.')
@@ -109,11 +110,11 @@ class FileAsObj(object):
 
     def check(self, line):
         """
-        Check existing contents of file for line.
+        Find first occurrence of 'line' in file.
 
         This searches each line as a whole, if you want to see if a substring is in a line, use .grep() or .egrep()
 
-        If found, return the line; makes it easier for some code to work more efficiently.
+        If found, return the line; this makes it easier to chain methods.
 
         :param line: String; whole line to find.
         :return: String or False.
@@ -269,17 +270,11 @@ class FileAsObj(object):
         return local_changes
 
     def save(self):
-        """
-        Answering a use case where calling this method with .save() instead of .write() is ideal.
-        ex: myfile.save()
-        """
+        """ Alias method, some use-cases prefer .save() over .write(). """
         return self.write()
 
     def append(self, this):
-        """
-        Shorcut method
-        ex: myfile.append('foo')
-        """
+        """ Alias method, some use-cases prefer .append() over .add(). """
         return self.add(this)
 
     def sort(self, key=None, reverse=False):
@@ -292,43 +287,25 @@ class FileAsObj(object):
         return None
 
     def __len__(self):
-        """
-        Return line count of file in memory.
-        ex: len(myfile)
-        """
+        """ Return line count of file in memory. """
         return len(self.contents)
 
     def __str__(self):
-        """
-        Return file in memory contents as a multi-line string.
-        ex: print(myfile)
-        """
+        """ Return file in memory contents as a multi-line string. """
         return '\n'.join(self.contents)
 
     def __sub__(self, this):
-        """
-        Shortcut method
-        ex: myfile - 'string to remove'
-        """
+        """ Shortcut method, allow line removal by subtraction. """
         return self.rm(this)
 
     def __add__(self, this):
-        """
-        Shortcut method
-        ex: myfile + 'string to append to end of myfile.contents'
-        """
+        """ Shortcut method, allow line appending by addition. """
         return self.add(this)
 
     def __contains__(self, this):
-        """
-        Shortcut method to check for a line in the file.
-        ex: if 'this' in myfile: do(stuff)
-        """
+        """ Shortcut method to check for a line in the file. """
         return self.check(this)
 
     def __iter__(self):
-        """
-        Shortcut method to iterate over contents.
-        ex: for line in myfile: foo(line)
-        """
+        """ Shortcut method to iterate over file contents. """
         return self.contents.__iter__()
