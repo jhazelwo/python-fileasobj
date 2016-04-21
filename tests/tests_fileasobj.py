@@ -64,7 +64,7 @@ class TestAll(unittest.TestCase):
     def test_file_not_found(self):
         """
         Fail if trying to instance class for file that does not exist.
-        This tests the shortcut method in __init__.
+        This tests the shortcut method in __init__
         """
         with self.assertRaises(IOError):
             FileAsObj('/this/file/does/not/exist/')
@@ -116,7 +116,7 @@ class TestAll(unittest.TestCase):
         self.assertTrue('95bf5dd7096c3552063e4187b4194b1f' not in test_file)
 
     def test_egrep_char_list(self):
-        """ Test egrep with valid character selector regex """
+        """ Test egrep with valid character selector regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('h[o0]stname')
@@ -124,7 +124,7 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_egrep_word(self):
-        """ Test egrep with a word """
+        """ Test egrep with a word. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('bird')
@@ -132,7 +132,7 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_bad_regex(self):
-        """ Test egrep with invalid regex """
+        """ Test egrep with invalid regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         try:
@@ -141,7 +141,7 @@ class TestAll(unittest.TestCase):
             self.assertEqual('nothing to repeat', str(error))
 
     def test_good_regex(self):
-        """ Test egrep with valid wildcard regex """
+        """ Test egrep with valid wildcard regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('.*rd')
@@ -149,13 +149,13 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_egrep_char_range(self):
-        """ Test egrep with valid range regex """
+        """ Test egrep with valid range regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertTrue(test_file.egrep('[a-z]ird'))
 
     def test_egrep_word_list(self):
-        """ Test egrep with valid choice regex """
+        """ Test egrep with valid choice regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('(host|bird)')
@@ -163,7 +163,7 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_egrep_string_end(self):
-        """ Test egrep with valid regex """
+        """ Test egrep with valid regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('tld$')
@@ -171,7 +171,7 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_egrep_string_start(self):
-        """ Test egrep with valid regex """
+        """ Test egrep with valid regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('^10.*')
@@ -179,7 +179,7 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_egrep_no_matches(self):
-        """ Test egrep with valid regex """
+        """ Test egrep with valid regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('^this is not present in file.*')
@@ -228,19 +228,19 @@ class TestAll(unittest.TestCase):
             test_file.add(True)
 
     def test_subtract(self):
-        """ Test __sub__ method """
+        """ Test __sub__ method. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertTrue(test_file - '#comment')
 
     def test_subtract_fail(self):
-        """ Test __sub__ method fails """
+        """ Test __sub__ method fails. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertFalse(test_file - 'this string does not exist in file!')
 
     def test_remove_multi(self):
-        """ Test deleting multiple lines """
+        """ Test deleting multiple lines. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertTrue(test_file.rm(test_file.grep('#')))
@@ -253,7 +253,7 @@ class TestAll(unittest.TestCase):
             test_file.rm(True)
 
     def test_replace_whole_line(self):
-        """ Test substitute a line """
+        """ Test substitute a line. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         old = '172.19.18.17    freebird.example.com'
@@ -261,7 +261,7 @@ class TestAll(unittest.TestCase):
         self.assertTrue(test_file.replace(old, new))
 
     def test_replace_regex(self):
-        """ Test substitute lines using a valid regex """
+        """ Test substitute lines using a valid regex. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         old = test_file.egrep('^[ ]+#.*')
@@ -270,7 +270,7 @@ class TestAll(unittest.TestCase):
         self.assertFalse(test_file.egrep('^[ ]+#.*'))
 
     def test_replace_list(self):
-        """ Test substitute lines using a list of strings """
+        """ Test substitute lines using a list of strings. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         old = ['#', '# ', '#1']
@@ -287,29 +287,29 @@ class TestAll(unittest.TestCase):
             test_file.replace(True, '')
 
     def test_count_comment_empty(self):
-        """ Test __len__ method """
+        """ Test __len__ method. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertEqual(len(test_file.grep('#')), 18)
 
     def test_string(self):
-        """ Test __str__ method """
+        """ Test __str__ method. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertTrue(str(test_file))
 
     def test_string_log_str(self):
-        """ Test __str__ method of log subclass """
+        """ Test __str__ method of log subclass. """
         test_file = FileAsObj()
         self.assertTrue(str(test_file.log))
 
     def test_string_log_call(self):
-        """ Test __call__ method of log subclass """
+        """ Test __call__ method of log subclass. """
         test_file = FileAsObj()
         self.assertIsNone(test_file.log('test'))
 
     def test_string_log_has_tag(self):
-        """ Test tag attribute of log subclass """
+        """ Test tag attribute of log subclass. """
         test_file = FileAsObj()
         self.assertTrue(str(test_file.log.tag))
 
@@ -323,12 +323,22 @@ class TestAll(unittest.TestCase):
         self.assertTrue(str(test_file) == '\n'.join(test_list))
 
     def test_sorted_attr(self):
-        """ Test self.sorted """
+        """ Test self.sorted attribute. """
         test_file = FileAsObj()
         test_file.sorted = True
         test_file.add('3')
         test_file.add('2')
         test_file.add('1')
+        self.assertTrue(test_file.contents == ['1', '2', '3'])
+
+    def test_sort_method(self):
+        """ Test self.sort() method. """
+        test_file = FileAsObj()
+        test_file.sorted = False
+        test_file.add('3')
+        test_file.add('2')
+        test_file.add('1')
+        self.assertIsNone(test_file.sort())
         self.assertTrue(test_file.contents == ['1', '2', '3'])
 
     def test_blank_file_with_unique(self):

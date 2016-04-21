@@ -226,7 +226,7 @@ class FileAsObj(object):
         If no matches returns False
 
         :param pattern: String; regex pattern to search for.
-        :return: List of Strings, or Boolean.
+        :return: List of Strings, or False.
         """
         pattern = re.compile(pattern)
         result = list()
