@@ -72,8 +72,7 @@ class FileAsObj(object):
         def __call__(self, this):
             """ Add 'this' to my log. """
             if self.logging is True:
-                self.trace = '{OG}{Now} {Host} {Proc} {Event}\n'.format(
-                    OG=self.trace,
+                self.trace += '{Now} {Host} {Proc} {Event}\n'.format(
                     Now=time.strftime('%c', time.localtime()),
                     Host=node(),
                     Proc=self.tag,
