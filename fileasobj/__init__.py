@@ -30,13 +30,8 @@ class FileAsObj(object):
         # Used during .write(), override only if absolutely necessary.
         self.linesep = '\n'
         #
-        # Name of file this is running as
-        arg0 = str(os.path.basename(sys.argv[0])).replace('.py', '')
-        if len(arg0) < 3 or len(arg0) > 255:
-            arg0 = 'Python'  # If arg zero is invalid, name me Python
-        #
         # Create a local log object to track actions.
-        self.log = self.Log(tag='{0}[{1}]'.format(arg0, os.getpid()), logging=logging)
+        self.log = self.Log(logging=logging)
         self.log('init(filename={0}):'.format(filename))
         #
         # The list where contents of the file are stored
@@ -65,14 +60,17 @@ class FileAsObj(object):
         Track and report steps taken in this app.
         'tag' is "name[pid]", similar to the -t argument used in `/bin/logger`
         """
-        def __init__(self, tag, logging=True):
-            """ Create new log """
+        def __init__(self, logging=True):
+            """ Create new log. """
+            arg0 = str(os.path.basename(sys.argv[0])).replace('.py', '')
+            if len(arg0) < 3 or len(arg0) > 255:
+                arg0 = 'Python'  # If arg zero is invalid, name me Python
             self.trace = ''
-            self.tag = tag
+            self.tag = '{0}[{1}]'.format(arg0, os.getpid())
             self.logging = logging
 
         def __call__(self, this):
-            """ Add 'this' to my log """
+            """ Add 'this' to my log. """
             if self.logging is True:
                 self.trace = '{OG}{Now} {Host} {Proc} {Event}\n'.format(
                     OG=self.trace,
@@ -83,7 +81,7 @@ class FileAsObj(object):
                 )
 
         def __str__(self):
-            """ Return my log as multi-line string """
+            """ Return my log as multi-line string. """
             return self.trace
 
     def read(self, given_file):
