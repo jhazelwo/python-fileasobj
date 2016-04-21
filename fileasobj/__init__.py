@@ -122,64 +122,63 @@ class FileAsObj(object):
             return line
         return False
 
-    def add(self, this):
+    def add(self, line):
         """
-        Append 'this' to contents
-            where 'this' is an entire line or a list of lines.
+        Append 'line' to contents
+            where 'line' is an entire line or a list of lines.
 
         If self.unique is False it will add regardless of contents.
 
         Multi-line strings are converted to a list delimited by new lines.
 
-        :param this: String or List of Strings; arbitrary string(s) to append to file contents.
+        :param line: String or List of Strings; arbitrary string(s) to append to file contents.
         :return: Boolean; whether contents were changed during this method call.
         """
         if self.unique is not False and self.unique is not True:
             raise AttributeError('Attribute self.unique is not True or False.')
-        self.log('add("{0}"); unique={1}'.format(this, self.unique))
-        if this is False:
+        self.log('add("{0}"); unique={1}'.format(line, self.unique))
+        if line is False:
             return False
-        if isinstance(this, str):
-            this = this.split('\n')
-        if not isinstance(this, list):
-            raise ValueError('Argument given to .add() not a string or list, was {0}'.format(type(this)))
+        if isinstance(line, str):
+            line = line.split('\n')
+        if not isinstance(line, list):
+            raise ValueError('Argument given to .add() not a string or list, was {0}'.format(type(line)))
         local_changes = False
-        for element in this:
-            if self.unique is False or element not in self.contents:
-                self.contents.append(element)
+        for this in line:
+            if self.unique is False or this not in self.contents:
+                self.contents.append(this)
                 self.changed = local_changes = True
         if self.sorted and local_changes:
             self.sort()
         return local_changes
 
-    def rm(self, this):
+    def rm(self, line):
         """
-        Remove all occurrences of 'this' from contents
-            where 'this' is an entire line or a list of lines.
+        Remove all occurrences of 'line' from contents
+            where 'line' is an entire line or a list of lines.
 
         Return true if the file was changed by rm(), False otherwise.
 
         Multi-line strings are converted to a list delimited by new lines.
 
-        :param this: String, or List of Strings; each string represents an entire line to be removed from file.
+        :param line: String, or List of Strings; each string represents an entire line to be removed from file.
         :return: Boolean, whether contents were changed.
         """
-        self.log('rm({0})'.format(this))
-        if this is False:
+        self.log('rm({0})'.format(line))
+        if line is False:
             return False
-        if isinstance(this, str):
-            this = this.split('\n')
-        if not isinstance(this, list):
-            raise ValueError('Argument given to .rm() not a string or list, was {0}'.format(type(this)))
-        #
+        if isinstance(line, str):
+            line = line.split('\n')
+        if not isinstance(line, list):
+            raise ValueError('Argument given to .rm() not a string or list, was {0}'.format(type(line)))
         local_changes = False
-        for element in this:
-            while element in self.contents:
-                self.log('Removed "{0}" from position {1}'.format(element, self.contents.index(element)))
-                self.contents.remove(element)
+        for this in line:
+            while this in self.contents:
+                self.log('Removed "{0}" from position {1}'.format(this, self.contents.index(this)))
+                self.contents.remove(this)
                 self.changed = local_changes = True
             else:
-                self.log('"{0}" not found in {1}'.format(element, self.filename))
+                self.log('"{0}" not found in {1}'.format(this, self.filename))
         if self.sorted and local_changes:
             self.sort()
         return local_changes
