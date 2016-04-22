@@ -23,7 +23,10 @@ class FileAsObj(object):
 
     def __init__(self, filename=None, logging=True):
         """
-        You may specify the file to read() during instantiation.
+        Construct a new FileAsObj.
+
+        :param filename: String; (optional) file to read.
+        :param logging: Boolean; whether to use the FileAsObj's internal log.
         """
         self.birthday = str(int(time.time()))
         #
