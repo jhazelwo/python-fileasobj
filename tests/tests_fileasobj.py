@@ -185,6 +185,7 @@ class TestAdd(unittest.TestCase):
         test_file = FileAsObj()
         with self.assertRaises(ValueError):
             test_file.add(1)
+        with self.assertRaises(ValueError):
             test_file.add(True)
 
     def test_unique_failure(self):
@@ -241,6 +242,7 @@ class TestRm(unittest.TestCase):
         test_file = FileAsObj()
         with self.assertRaises(ValueError):
             test_file.rm(1)
+        with self.assertRaises(ValueError):
             test_file.rm(True)
 
     def test_remove_multi(self):
@@ -413,6 +415,7 @@ class TestReplace(unittest.TestCase):
         test_file = FileAsObj()
         with self.assertRaises(ValueError):
             test_file.replace(1, '')
+        with self.assertRaises(ValueError):
             test_file.replace(True, '')
 
     def test_replace_whole_line(self):
@@ -431,6 +434,7 @@ class TestAppend(unittest.TestCase):
         test_file = FileAsObj()
         with self.assertRaises(ValueError):
             test_file.append(1)
+        with self.assertRaises(ValueError):
             test_file.append(True)
 
     def test_unique_failure(self):
@@ -561,6 +565,7 @@ class TestAddition(unittest.TestCase):
         test_file = FileAsObj()
         with self.assertRaises(ValueError):
             test_file + 1
+        with self.assertRaises(ValueError):
             test_file + True
 
     def test_addition_unique_failure(self):
