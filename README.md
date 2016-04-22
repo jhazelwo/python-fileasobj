@@ -1,5 +1,4 @@
-File as (Python) Object
-===============
+#  File as (Python) Object
 
 Manage a local file as an object. Contents stored in a [list](https://docs.python.org/3/library/stdtypes.html#list).
 
@@ -8,12 +7,12 @@ Written to handle files that contain only text data, good for when you cannot (o
 Typically this module is not appropriate for config files. (Your mileage may vary)
 
 
-### Installation:
+## Installation:
 
 `pip install fileasobj`
 
 
-### Usage:
+## Usage:
 
 * See docs/examples.py for lots of useful examples.
 
@@ -82,7 +81,7 @@ Shortcut methods also exist, check examples.py for usage.
 * `linesep`
     * String; override the default line separator during .write().
 
-### An ever-so-slightly-non-apocryphal non-minor version history:
+## An ever-so-slightly-non-apocryphal non-minor version history:
 
 * 2016.04.17 - Conversion and deploy to pypi. FileAsList removed.
 * 2015.01.28 - Added shortcut methods, removed exception catching. Added local Log() class.
@@ -96,7 +95,7 @@ Shortcut methods also exist, check examples.py for usage.
 * 2012.07.20 - Initial public release.
 
 
-### Testing:
+## Testing:
 
 I write in Python 3.4 and occasionally do testing and 2.7. This module _should_ work with anything between 2.7
  and 3.4, please let me know if you find a bug.
@@ -104,13 +103,14 @@ I write in Python 3.4 and occasionally do testing and 2.7. This module _should_ 
 `./tests/test_fileasobj.py` is a standard unit test.
 
 
-### Troubleshooting:
+## Troubleshooting:
 
 If FileAsObj did something you didn't expect then add a `print(my_file.log)` to your code, that will show all of the actions FileAsObj took during the object's life.
 
 File an [issue](https://github.com/jhazelwo/python-fileasobj/issues) on this repo if you need help.
 
 
-### Development & TODO:
+## Development & TODO:
 
+* Release version 2 is scheduled to be deployed to PyPI 2012.04.23.
 * Add as_dict() method: return self.contents as a dictionary, where key is line number and value is line content. Note, there is no use-case for this currently.
