@@ -165,17 +165,31 @@ class TestRead(unittest.TestCase):
 
 class TestCheck(unittest.TestCase):
     # def check(self, line):
-    def test_check(self):
-        """ Test check method. """
+    def test_check_present(self):
+        """ Test check() method with string that is present in file. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         self.assertTrue(test_file.check('# This is a test hosts file'))
 
-    def test_check_not(self):
-        """ Test check method. """
+    def test_check_blank_line(self):
+        """ Test check() method with empty string that is present in file. """
+        test_file = FileAsObj()
+        test_file.contents = BLANKFILE.split('\n')
+        self.assertEqual(test_file.check(''), '')
+
+    def test_check_not_present(self):
+        """ Test check() method with string that is not present in file. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
-        self.assertTrue(test_file.check('95bf5dd7096c3552063e4187b4194b1f') == False)
+        self.assertFalse(test_file.check('line_not_found'))
+
+    def test_check_failure(self):
+        """ Test check() method with wrong parameter type. """
+        test_file = FileAsObj()
+        with self.assertRaises(ValueError):
+            test_file.check(1)
+        with self.assertRaises(ValueError):
+            test_file.check(False)
 
 
 class TestAdd(unittest.TestCase):

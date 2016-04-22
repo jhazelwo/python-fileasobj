@@ -116,6 +116,8 @@ class FileAsObj(object):
         :param line: String; whole line to find.
         :return: String or False.
         """
+        if not isinstance(line, str):
+            raise ValueError('Argument given to .check() not a string, was {0}'.format(type(line)))
         if line in self.contents:
             return line
         return False
