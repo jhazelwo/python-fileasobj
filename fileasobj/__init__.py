@@ -281,8 +281,8 @@ class FileAsObj(object):
         Sort contents using sort() method available to list()
         :return: None (because list().sort() doesn't return anything)
         """
+        self.log('sort()')
         self.contents.sort(key=key, reverse=reverse)
-        self.log('Contents sorted.')
         return None
 
     def __len__(self):
