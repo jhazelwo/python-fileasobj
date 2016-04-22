@@ -171,10 +171,11 @@ class FileAsObj(object):
             raise ValueError('Argument given to .rm() not a string or list, was {0}'.format(type(line)))
         local_changes = False
         for this in line:
-            while this in self.contents:
-                self.log('Removed "{0}" from position {1}'.format(this, self.contents.index(this)))
-                self.contents.remove(this)
-                self.changed = local_changes = True
+            if this in self.contents:
+                while this in self.contents:
+                    self.log('Removed "{0}" from position {1}'.format(this, self.contents.index(this)))
+                    self.contents.remove(this)
+                    self.changed = local_changes = True
             else:
                 self.log('"{0}" not found in {1}'.format(this, self.filename))
         if self.sorted and local_changes:
@@ -256,12 +257,13 @@ class FileAsObj(object):
             raise ValueError('Argument "old" not a string, list or False, was {0}'.format(type(old)))
         local_changes = False
         for this in old:
-            while this in self.contents:
-                index = self.contents.index(this)
-                self.changed = local_changes = True
-                self.contents.remove(this)
-                self.contents.insert(index, new)
-                self.log('Replaced "{0}" with "{1}" at line {2}'.format(this, new, index))
+            if this in self.contents:
+                while this in self.contents:
+                    index = self.contents.index(this)
+                    self.changed = local_changes = True
+                    self.contents.remove(this)
+                    self.contents.insert(index, new)
+                    self.log('Replaced "{0}" with "{1}" at line {2}'.format(this, new, index))
             else:
                 self.log('"{0}" not in {1}'.format(this, self.filename))
         return local_changes
