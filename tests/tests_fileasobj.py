@@ -403,12 +403,15 @@ class TestReplace(unittest.TestCase):
     def test_replace_list(self):
         """ Test substitute lines using a list of strings. """
         test_file = FileAsObj()
-        test_file.add(TESTCONTENTS)
+        test_file.contents = TESTCONTENTS.split('\n')
+        self.assertFalse(test_file.changed)
         old = ['#', '# ', '#1']
         new = '###'
         self.assertTrue(test_file.replace(old, new))
+        self.assertTrue(test_file.changed)
         for this in old:
             self.assertFalse(test_file.check(this))
+        self.assertEqual(test_file.check(new), new)
 
     def test_replace_failure(self):
         """ Test wrong param type in replace() """
