@@ -179,10 +179,18 @@ class TestAll(unittest.TestCase):
         self.assertIsInstance(result, list)
 
     def test_egrep_no_matches(self):
-        """ Test egrep with valid regex. """
+        """ Test egrep with valid regex but pattern not in file. """
         test_file = FileAsObj()
         test_file.contents = TESTCONTENTS.split('\n')
         result = test_file.egrep('^this is not present in file.*')
+        self.assertTrue(result is False)
+        self.assertIsInstance(result, bool)
+
+    def test_grep_no_matches(self):
+        """ Test grep substring not present in file. """
+        test_file = FileAsObj()
+        test_file.contents = TESTCONTENTS.split('\n')
+        result = test_file.egrep('substring_not_found')
         self.assertTrue(result is False)
         self.assertIsInstance(result, bool)
 

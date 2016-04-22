@@ -208,13 +208,13 @@ class FileAsObj(object):
         :param needle: String; word or phrase to search for.
         :return: List of Strings, or False.
         """
-        result = list()
+        result = []
         for line in self.contents:
             if needle in line:
                 result.append(line)
-        if len(result) == 0:
-            return False
-        return result
+        if result:
+            return result
+        return False
 
     def egrep(self, pattern):
         """
@@ -228,13 +228,13 @@ class FileAsObj(object):
         :return: List of Strings, or False.
         """
         pattern = re.compile(pattern)
-        result = list()
+        result = []
         for line in self.contents:
             if pattern.search(line):
                 result.append(line)
-        if len(result) == 0:
-            return False
-        return result
+        if result:
+            return result
+        return False
 
     def replace(self, old, new):
         """
