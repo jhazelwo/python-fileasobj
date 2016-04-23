@@ -139,7 +139,7 @@ class FileAsObj(object):
         """
         if self.unique is not False and self.unique is not True:
             raise AttributeError("Attribute 'unique' is not True or False.")
-        self.log('add("{0}"); unique={1}'.format(line, self.unique))
+        self.log('add({0}); unique={1}'.format(line, self.unique))
         if line is False:
             return False
         if isinstance(line, str):
@@ -182,7 +182,7 @@ class FileAsObj(object):
                     self.contents.remove(this)
                     self.changed = local_changes = True
             else:
-                self.log('"{0}" not found in {1}'.format(this, self.filename))
+                self.log('"{0}" not in {1}'.format(this, self.filename))
         if self.sorted and local_changes:
             self.sort()
         return local_changes
@@ -253,7 +253,7 @@ class FileAsObj(object):
 
         :return: Boolean; whether contents changed during method call.
         """
-        self.log('replace("{0}", "{1}")'.format(old, new))
+        self.log('replace({0}, {1})'.format(old, new))
         if old is False:
             return False
         if isinstance(old, str):
