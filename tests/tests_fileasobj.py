@@ -81,7 +81,8 @@ class TestInit(unittest.TestCase):
         self.assertTrue(test_file.birthday)
         self.assertIsInstance(test_file.birthday, str)
 
-    def test_default_params(self):
+    def test_default_attributes(self):
+        """ Test default attributes of object. """
         test_file = FileAsObj()
         self.assertFalse(test_file.unique)
         self.assertFalse(test_file.sorted)
@@ -89,6 +90,20 @@ class TestInit(unittest.TestCase):
         self.assertIsNone(test_file.filename)
         self.assertTrue(test_file.contents == [])
         self.assertTrue(test_file.linesep == '\n')
+
+    def test_param_failure(self):
+        """ Passing anything other than String as filename should raise TypeError. """
+        with self.assertRaises(TypeError):
+            FileAsObj(1)
+        with self.assertRaises(TypeError):
+            FileAsObj(True)
+        with self.assertRaises(TypeError):
+            FileAsObj([])
+        with self.assertRaises(TypeError):
+            FileAsObj({})
+        with self.assertRaises(TypeError):
+            test_file = FileAsObj()
+            test_file.read(False)
 
 
 class TestLog(unittest.TestCase):
