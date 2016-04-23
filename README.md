@@ -112,5 +112,4 @@ File an [issue](https://github.com/jhazelwo/python-fileasobj/issues) on this rep
 
 ## Development & TODO:
 
-* Release version 2 is scheduled to be deployed to PyPI 2016.04.23.
 * Add as_dict() method: return self.contents as a dictionary, where key is line number and value is line content. Note, there is no use-case for this currently.
