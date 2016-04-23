@@ -120,7 +120,7 @@ class FileAsObj(object):
         :return: String or False.
         """
         if not isinstance(line, str):
-            raise TypeError("Parameter 'line' not a string, is {0}".format(type(line)))
+            raise TypeError("Parameter 'line' not a 'string', is {0}".format(type(line)))
         if line in self.contents:
             return line
         return False
