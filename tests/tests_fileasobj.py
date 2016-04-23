@@ -201,9 +201,9 @@ class TestCheck(unittest.TestCase):
     def test_check_failure(self):
         """ Test check() method with wrong parameter type. """
         test_file = FileAsObj()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.check(1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.check(False)
 
 
@@ -212,9 +212,9 @@ class TestAdd(unittest.TestCase):
     def test_add_failure_param(self):
         """ Test wrong param type. """
         test_file = FileAsObj()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.add(1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.add(True)
 
     def test_unique_failure(self):
@@ -269,9 +269,9 @@ class TestRm(unittest.TestCase):
     def test_rm_failure(self):
         """ Test wrong param type in rm() """
         test_file = FileAsObj()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.rm(1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.rm(True)
 
     def test_remove_multi(self):
@@ -445,10 +445,12 @@ class TestReplace(unittest.TestCase):
     def test_replace_failure(self):
         """ Test wrong param type in replace() """
         test_file = FileAsObj()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.replace(1, '')
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.replace(True, '')
+        with self.assertRaises(TypeError):
+            test_file.replace('', True)
 
     def test_replace_whole_line(self):
         """ Test substitute a line. """
@@ -464,9 +466,9 @@ class TestAppend(unittest.TestCase):
     def test_append_failure_param(self):
         """ Test wrong param type in append() """
         test_file = FileAsObj()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.append(1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file.append(True)
 
     def test_unique_failure(self):
@@ -595,9 +597,9 @@ class TestAddition(unittest.TestCase):
     def test_addition_failure_param(self):
         """ Test wrong param type. """
         test_file = FileAsObj()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file + 1
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             test_file + True
 
     def test_addition_unique_failure(self):

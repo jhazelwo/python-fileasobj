@@ -93,7 +93,7 @@ class FileAsObj(object):
         Will sort self.contents after reading file if self.sorted is True
         """
         if self.unique is not False and self.unique is not True:
-            raise AttributeError('Attribute self.unique is not True or False.')
+            raise AttributeError("Attribute 'unique' is not True or False.")
         self.filename = str.strip(given_file)
         self.log('Read-only opening {0}'.format(self.filename))
         with open(self.filename, 'r') as handle:
@@ -120,7 +120,7 @@ class FileAsObj(object):
         :return: String or False.
         """
         if not isinstance(line, str):
-            raise ValueError('Argument given to .check() not a string, was {0}'.format(type(line)))
+            raise TypeError("Parameter 'line' not a string, is {0}".format(type(line)))
         if line in self.contents:
             return line
         return False
@@ -138,14 +138,14 @@ class FileAsObj(object):
         :return: Boolean; whether contents were changed during this method call.
         """
         if self.unique is not False and self.unique is not True:
-            raise AttributeError('Attribute self.unique is not True or False.')
+            raise AttributeError("Attribute 'unique' is not True or False.")
         self.log('add("{0}"); unique={1}'.format(line, self.unique))
         if line is False:
             return False
         if isinstance(line, str):
             line = line.split('\n')
         if not isinstance(line, list):
-            raise ValueError('Argument given to .add() not a string or list, was {0}'.format(type(line)))
+            raise TypeError("Parameter 'line' not a 'string' or 'list', is {0}".format(type(line)))
         local_changes = False
         for this in line:
             if self.unique is False or this not in self.contents:
@@ -173,7 +173,7 @@ class FileAsObj(object):
         if isinstance(line, str):
             line = line.split('\n')
         if not isinstance(line, list):
-            raise ValueError('Argument given to .rm() not a string or list, was {0}'.format(type(line)))
+            raise TypeError("Parameter 'line' not a 'string' or 'list', is {0}".format(type(line)))
         local_changes = False
         for this in line:
             if this in self.contents:
@@ -259,7 +259,9 @@ class FileAsObj(object):
         if isinstance(old, str):
             old = old.split('\n')
         if not isinstance(old, list):
-            raise ValueError('Argument "old" not a string, list or False, was {0}'.format(type(old)))
+            raise TypeError("Parameter 'old' not a 'string' or 'list', is {0}".format(type(old)))
+        if not isinstance(new, str):
+            raise TypeError("Parameter 'new' not a 'string', is {0}".format(type(new)))
         local_changes = False
         for this in old:
             if this in self.contents:
