@@ -94,8 +94,6 @@ class TestInit(unittest.TestCase):
     def test_param_failure(self):
         """ Passing anything other than String as filename should raise TypeError. """
         with self.assertRaises(TypeError):
-            print('.')
-        with self.assertRaises(TypeError):
                 FileAsObj(1)
         with self.assertRaises(TypeError):
             FileAsObj(True)
